@@ -1,6 +1,6 @@
 "use strict";
 
-var Aes = require("./aes");
+var AesStream = require("./aes-stream");
 var fs = require("fs");
 
 var password = null;
@@ -29,28 +29,23 @@ if (!fileOut || !fileIn || !password) {
 \t-o - output file
 \t-p - password\n\nExample:
 \tencrypt: node app -e -i\"d:\\test.txt\" -o\"d:\\test.enc\" -pMyStrongPwd
-\tdecrypt: node app -i\"d:\\test.enc\" -o\"d:\\decrypt.txt\" -pMyStrongPwd`);
+\tdecrypt: node app    -i\"d:\\test.enc\" -o\"d:\\test.dec\" -pMyStrongPwd`);
     return;
 }
 
-var callback = function (err, resultData) {
-    if (err) {
-        console.error(fileIn, " -> ", fileOut, "failed. Error:", err);
-        return;
-    }
-    fs.writeFile(fileOut, resultData, (err) => {
-        if (err) {
-            throw Error(err);
-        }
-        console.log(fileIn, " -> ", fileOut, "done");
-    });
+var date = () => {
+    return new Date().toISOString().replace(/T/, ' ');
+}
+var onError = (err) => {
+    console.log(date(), "Error", err);
+};
+var onFinish = () => {
+    console.log(date(), "Done");
 }
 
-//use your own params for initialization Aes
-var aes = new Aes(2007, 64);
-
-if (isEncrypt) {
-    aes.encryptFile(fileIn, password, callback);
-} else {
-    aes.decryptFile(fileIn, password, callback);
-}
+var proc = new AesStream(password, isEncrypt, 2007, 64, onError);
+var r = fs.createReadStream(fileIn);
+console.log(date(), "Start");
+var w = fs.createWriteStream(fileOut);
+w.on("finish", onFinish);
+r.pipe(proc).pipe(w);
