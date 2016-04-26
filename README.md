@@ -14,6 +14,6 @@ node app -e -i\"d:\\test.txt\" -o\"d:\\test.enc\" -pMyStrongPwd
 ```
 decrypt
 ```sh
-node app -i\"d:\\test.enc\" -o\"d:\\decrypt.txt\" -pMyStrongPwd`
+node app -d -i\"d:\\test.enc\" -o\"d:\\test.dec\" -pMyStrongPwd`
 ```
 
