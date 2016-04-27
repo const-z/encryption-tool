@@ -37,7 +37,7 @@ var date = () => {
     return new Date().toISOString().replace(/T/, ' ');
 }
 var onError = (err) => {
-    console.log(date(), "Error", err);
+
 };
 var onFinish = () => {
     console.log(date(), "Done");
@@ -45,6 +45,7 @@ var onFinish = () => {
 
 var proc = new AesStream(password, isEncrypt, 2007, 64, onError);
 var r = fs.createReadStream(fileIn);
+r.on("error", onError);
 console.log(date(), "Start");
 var w = fs.createWriteStream(fileOut);
 w.on("finish", onFinish);
