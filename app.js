@@ -36,8 +36,9 @@ if (!fileOut || !fileIn || !password) {
 var date = () => {
     return new Date().toISOString().replace(/T/, ' ');
 }
-var onError = (err) => {
 
+var onError = (err) => {
+    console.log(date(), "Error", err.message);
 };
 var onFinish = () => {
     console.log(date(), "Done");
